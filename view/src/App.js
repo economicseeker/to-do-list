@@ -9,14 +9,48 @@ const App = () => {
   const [todoList, setTodoList] = useState();
   const [error, setError] = useState();
 
-// Create a fetchTodos() function to update the View from Model using getTodos() function from Controller
+  // Fetch all todos from the backend
+  const fetchTodos = async () => {
+    try {
+      const todos = await getTodos();
+      setTodoList(todos);
+      setError(null);
+    } catch (err) {
+      setError('Failed to fetch todos');
+    }
+  };
 
-// Create a handleDelete() function to remove to-do list with matching id
+  // Handle form submission to add a new todo
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!todo.description.trim()) {
+      setError('Description cannot be empty');
+      return;
+    }
+    try {
+      await createTodo(todo);
+      setTodo({ description: '' });
+      setError(null);
+      fetchTodos();
+    } catch (err) {
+      setError('Failed to add todo');
+    }
+  };
 
-// Create a handleSubmit() function to add new to-do list
+  // Handle deleting a todo by id
+  const handleDelete = async (id) => {
+    try {
+      await removeTodo(id);
+      setError(null);
+      fetchTodos();
+    } catch (err) {
+      setError('Failed to delete todo');
+    }
+  };
 
   useEffect(() => {
     // Initialize todoList
+    fetchTodos();
   }, []);
   return (
     <div className="App">
